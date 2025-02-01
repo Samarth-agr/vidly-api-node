@@ -63,17 +63,4 @@ mongoose.connect('mongodb://127.0.0.1/vidly', { useNewUrlParser: true, useUnifie
     console.error('Could not connect to MongoDB...', err);
   });
 
-// Example function to perform a transaction
-async function performTransaction() {
-  try {
-    await YourModel.create({ field: value });
-    await AnotherModel.updateOne({ _id }, { $set: { field: newValue } });
-  } catch (error) {
-    console.error(error);
-  }
-  
-}
-
-// Call the transaction function for testing (remove in production)
-performTransaction().catch(console.error);
 
