@@ -11,6 +11,9 @@ const auth = require('./routes/auth');
 const returns = require('./routes/returns');
 const error = require('./middleware/error');
 const Joi = require('joi');
+require('dotenv').config(); // Load environment variables
+const mongoURI = process.env.MONGO_URI;
+
 
 // Initialize the app
 const app = express();
@@ -50,7 +53,7 @@ if (!config.get('jwtPrivateKey')) {
 }
 
 // MongoDB connection
-mongoose.connect('mongodb://127.0.0.1/vidly', { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
     console.log('Connected to MongoDB...');
 
