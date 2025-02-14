@@ -4,39 +4,42 @@ const bcrypt = require("bcrypt");
 const router = express.Router();
 
 router.post("/", async (req, res) => {
-  // Validate the request body
-  const { error } = validate(req.body); // Destructure `error` from the result of `validate`
+  // Validate request body
+  const { error } = validate(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
-  // Check if the user already exists
+  // Check if the email is already registered
   let user = await User.findOne({ email: req.body.email });
   if (user) return res.status(400).send("User already registered.");
 
-  // Create a new user
+  // 🔹 Ensure username is included
   user = new User({
+    username: req.body.username, // FIXED: Add username
     name: req.body.name,
     email: req.body.email,
-    password: req.body.password,
+    password: req.body.password
   });
 
   // Hash the password before saving
   const salt = await bcrypt.genSalt(10);
   user.password = await bcrypt.hash(user.password, salt);
 
-  // Save the user in the database
+  // Save the user
   await user.save();
 
-  // Generate an auth token for the new user
+  // Generate auth token
   const token = user.generateAuthToken();
 
-  // Send the response with the token in the header
+  // Send response with the token
   res
     .header("x-auth-token", token)
     .send({
       _id: user._id,
+      username: user.username, // FIXED: Send username
       name: user.name,
-      email: user.email,
+      email: user.email
     });
 });
+
 
 module.exports = router;
